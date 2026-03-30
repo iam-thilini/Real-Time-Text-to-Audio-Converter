@@ -145,9 +145,45 @@ Settings:
    ```
 This stores failure records in S3 for debugging and auditing.
 
+## How to Test the System
+1. Create a text file, for example:
+   ```
+    hello.txt
+   ```
+2. Upload it to:
+   ```
+    s3://th-polly-text-files-storage-bucket/
+   ```
+3. The Lambda function is triggered automatically
+4. An MP3 file is generated and saved to:
+   ```
+    s3://th-polly-audio-files-storage-bucket/
+   ```
+   
+## Sample Output
+- Input:
+  ```
+    hello.txt
+  ```
+- Output:
+  ```
+    hello.mp3
+  ```
+The audio file contains spoken narration of the uploaded text.
 
+## Logging  & Monitoring
+- Execution logs are available in **Amazon CloudWatch Logs**
+- Logs show:
+    - File processing start
+    - Text size
+    - Polly conversion status
+    - S3 upload success or failure
 
-
+## Security Notes
+- IAM role follows least-privilege principles
+- No AWS credentials are hardcoded
+- Configuration is handled using environment variables
+- All services communicate securely via AWS IAM
 
 
 
