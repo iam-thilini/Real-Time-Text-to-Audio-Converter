@@ -40,23 +40,60 @@ Create an IAM role that allows Lambda to access Polly and S3.
 ### 2️⃣ Create S3 Buckets
 Create two S3 buckets.
 1. Source Bucket (Text Files)
-  - Example name:
-  ```
-  th-polly-text-files-storage-bucket
-  ```
-  - This bucket will store uploaded `.txt` files
+    - Example name:
+      ```
+      th-polly-text-files-storage-bucket
+      ```
+    - This bucket will store uploaded `.txt` files
 2. Destination Bucket (Audio Files)
-  - Example name:
-  ```
-  th-polly-audio-files-storage-bucket
-  ```
+    - Example name:
+      ```
+      th-polly-audio-files-storage-bucket
+      ```
 This bucket will store generated `.mp3` files
 
 Keep all other settings as **default**.
 
+## 3️⃣ Create the Lambda Function
+1. Open **AWS Lambda** → Create function
+2. Select Author from scratch
 
+Function settings:
+- Function name:
+```
+PollyTranslationFunction
+```
+- Runtime:
+```
+Python 3.14
+```
+- Execution role:
+    - Use an existing role
+    - Select:
+      ```
+      PollyTranslationRole
+      ```
+3. Create the function
 
+4️⃣ Configure Lambda Environment Variables
+Go to Configuration → Environment variables and add:
 
+| Key          | Value                               |
+| ------------ | ----------------------------------- |
+| TEXT_BUCKET  | th-polly-text-files-storage-bucket  |
+| AUDIO_BUCKET | th-polly-audio-files-storage-bucket |
+
+These variables define the source and destination S3 buckets.
+
+5️⃣ Add Lambda Code
+1. Open the Code tab
+2. Replace the default code with your Text-to-Speech Lambda function code
+3. Click Deploy
+
+The Lambda function:
+ - Reads text from the source S3 bucket
+ - Converts it to speech using Amazon Polly
+ - Uploads the generated MP3 to the destination bucket
 
 
 
