@@ -25,7 +25,7 @@ Create an IAM role that allows Lambda to access Polly and S3.
 
 1. Open **IAM** → Roles → Create role
 2. Trusted entity:
-    - **AWS service**
+ - **AWS service**
     - Use case: **Lambda**
 3. Attach the following policies:
     - AmazonPollyFullAccess
