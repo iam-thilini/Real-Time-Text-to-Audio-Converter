@@ -25,7 +25,7 @@ Create an IAM role that allows Lambda to access Polly and S3.
 
 1. Open **IAM** → Roles → Create role
 2. Trusted entity:
-  - **AWS service**
+    - **AWS service**
     - Use case: **Lambda**
 4. Attach the following policies:
     - AmazonPollyFullAccess
@@ -75,7 +75,7 @@ Python 3.14
       ```
 3. Create the function
 
-4️⃣ Configure Lambda Environment Variables
+## 4️⃣ Configure Lambda Environment Variables
 Go to **Configuration → Environment variables** and add:
 
 | Key          | Value                               |
@@ -85,7 +85,7 @@ Go to **Configuration → Environment variables** and add:
 
 These variables define the source and destination S3 buckets.
 
-5️⃣ Add Lambda Code
+## 5️⃣ Add Lambda Code
 1. Open the **Code** tab
 2. Replace the default code with your **Text-to-Speech Lambda function code**
 3. Click **Deploy**
@@ -95,7 +95,7 @@ The Lambda function:
  - Converts it to speech using Amazon Polly
  - Uploads the generated MP3 to the destination bucket
 
-6️⃣ Configure S3 Trigger
+## 6️⃣ Configure S3 Trigger
 1. Open the **source S3 bucket**
 2. Go to **Properties**
 3. Scroll to **Event notifications**
@@ -123,7 +123,7 @@ The Lambda function:
 
 Save the configuration.
 
-7️⃣ Configure Lambda Destination (Failure Handling)
+## 7️⃣ Configure Lambda Destination (Failure Handling)
 
 To capture failed invocations:
 1. Open **Lambda → PollyTranslationFunction**
@@ -144,6 +144,20 @@ Settings:
     th-polly-audio-files-storage-bucket
    ```
 This stores failure records in S3 for debugging and auditing.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
