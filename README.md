@@ -19,6 +19,8 @@ Voice parameters such as voice type, pitch, and speech rate can be customized wi
 - **AWS IAM** – Secure role-based access for AWS services
 - **Amazon CloudWatch** – Logging and monitoring
 
+![Real Time Text to Audio Converter Architecture Diagram](/images/architecture.png)
+
 ## Step-by-Step Setup Guide
 ### 1️⃣ Create IAM Role for Lambda
 Create an IAM role that allows Lambda to access Polly and S3.
