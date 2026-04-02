@@ -100,16 +100,69 @@ This creates a simple, scalable, and fully managed text-to-speech conversion wor
 
 ---
 
-## 📘 Step-by-Step Setup Guide
+## 📘 Detailed Setup Guide
+For step-by-step AWS configuration and deployment instructions, see:
 
-### 1️⃣ Create IAM Role
-Create a role for Lambda with the required permissions.
+👉 [Setup Guide](docs/setup-guide.md)
 
-**Role Name**
-```txt
-PollyTranslationRole
+## 🔐 Security & Reliability
+- IAM role-based access is used instead of hardcoded credentials
+- Configuration is handled via environment variables
+- Managed AWS services provide high availability
+- CloudWatch logs help monitor success and troubleshoot failures
+- The system uses event-based processing, reducing unnecessary execution
 
+## 🧩 Challenges & Learnings
+1️⃣ Understanding Lambda Failure Destinations
 
+**Challenge:**
+At first, failed Lambda invocations created unexpected nested files in the destination bucket.
+
+**Learning:**
+Those files were not MP3 outputs — they were asynchronous failure records written by Lambda because an **On failure S3 destination** had been configured.
+
+## 2️⃣ Differentiating Polly Output Flow
+
+**Challenge:**
+It was initially confusing whether Amazon Polly writes directly to S3.
+
+**Learning:**
+When using synthesize_speech, Polly returns an AudioStream to Lambda.
+Lambda is responsible for uploading the MP3 file to the destination S3 bucket.
+
+## 3️⃣ Avoiding Hardcoded Bucket Names
+
+**Challenge:**
+Using raw bucket names directly in code caused errors and made the function less reusable.
+
+**Learning:**
+Storing bucket names in environment variables is cleaner, safer, and aligns with AWS best practices.
+
+## 4️⃣ Planning for Large Text Inputs
+
+**Challenge:**
+Synchronous Polly calls are not ideal for large text files.
+
+**Learning:**
+For bigger files, a better future improvement is to use Polly S3 Synthesis Tasks instead of AudioStream.
+
+## ✅ Summary
+This project showcases:
+ - Serverless architecture on AWS
+ - Event-driven file processing
+ - Text-to-speech conversion using Amazon Polly
+ - Integration between S3, Lambda, and Polly
+ - CloudWatch-based observability
+ - Real-world AWS debugging and configuration experience
+
+It is a simple but practical example of how AWS managed services can be combined to build a scalable media-processing workflow.
+
+🚀 Future Improvements
+- Add support for multiple voices
+- Add SSML support for pitch, speed, and pronunciation control
+- Use Polly S3 Synthesis Tasks for large text files
+- Add a frontend for file upload and audio playback
+- Notify users when conversion is complete
 
 
 
