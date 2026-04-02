@@ -127,7 +127,7 @@ Those files were not MP3 outputs — they were asynchronous failure records writ
 It was initially confusing whether Amazon Polly writes directly to S3.
 
 **Learning:**
-When using synthesize_speech, Polly returns an AudioStream to Lambda.
+When using `synthesize_speech`, Polly returns an AudioStream to Lambda.
 Lambda is responsible for uploading the MP3 file to the destination S3 bucket.
 
 ## 3️⃣ Avoiding Hardcoded Bucket Names
@@ -136,7 +136,7 @@ Lambda is responsible for uploading the MP3 file to the destination S3 bucket.
 Using raw bucket names directly in code caused errors and made the function less reusable.
 
 **Learning:**
-Storing bucket names in environment variables is cleaner, safer, and aligns with AWS best practices.
+Storing bucket names in **environment variables** is cleaner, safer, and aligns with AWS best practices.
 
 ## 4️⃣ Planning for Large Text Inputs
 
@@ -144,7 +144,7 @@ Storing bucket names in environment variables is cleaner, safer, and aligns with
 Synchronous Polly calls are not ideal for large text files.
 
 **Learning:**
-For bigger files, a better future improvement is to use Polly S3 Synthesis Tasks instead of AudioStream.
+For bigger files, a better future improvement is to use **Polly S3 Synthesis Tasks** instead of `AudioStream`.
 
 ## ✅ Summary
 This project showcases:
