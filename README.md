@@ -53,7 +53,7 @@ This creates a simple, scalable, and fully managed text-to-speech conversion wor
 
 ## 🖼️ Architecture Diagram
 
-![Text to Speech Converter Architecture](./images/text-to-speech-architecture.png)
+![Text to Speech Converter Architecture](./images/architecture.png)
 
 **Figure:** Serverless Text-to-Speech Architecture using Amazon S3, AWS Lambda, and Amazon Polly.
 
