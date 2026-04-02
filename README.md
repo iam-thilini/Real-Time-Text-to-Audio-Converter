@@ -1,191 +1,116 @@
-# Real Time Text to Audio Converter
-A serverless Text-to-Speech (TTS) conversion system built on AWS.
-This project automatically converts uploaded text files into natural-sounding speech using **Amazon Polly**.
-Users upload a .txt file to an Amazon S3 bucket, and the system generates an MP3 audio file without managing any servers.
-Voice parameters such as voice type, pitch, and speech rate can be customized within the Lambda function.
+# Text to Speech Converter using Amazon Polly
+Serverless Text-to-Speech Processing System on AWS
 
-## Architecture Overview
-**Workflow:**
-1. A text file (.txt) is uploaded to an Amazon S3 bucket
-2. An S3 event triggers an AWS Lambda function
-3. The Lambda function reads the text file
-4. Amazon Polly converts the text into speech
-5. The generated MP3 file is stored in a destination S3 bucket
+📌 Overview  
+This project is a fully serverless text-to-speech conversion system built using AWS managed services. It allows users to upload text files to Amazon S3, automatically processes them with AWS Lambda, converts the text into speech using Amazon Polly, and stores the generated MP3 files in a destination S3 bucket — all without managing servers.
 
-## AWS Services Used
-- **Amazon S3** – Source and destination storage for text and audio files
-- **AWS Lambda** – Serverless text-to-speech processing logic
-- **Amazon Polly** – Text-to-Speech conversion service
-- **AWS IAM** – Secure role-based access for AWS services
+The project demonstrates serverless architecture, event-driven processing, AWS service integration, and cloud best practices for scalability, simplicity, and observability.
+
+---
+
+## 🎯 Problem Statement
+Converting written content such as blog posts, notes, or book excerpts into audio usually requires manual tools or tightly coupled applications. These approaches can be:
+
+- Time-consuming
+- Hard to scale
+- Difficult to automate
+- Less flexible for cloud-based workflows
+
+This project solves that problem by providing a cloud-native, serverless pipeline that automatically converts uploaded text files into audio files.
+
+---
+
+## 💡 Solution Summary
+A user uploads a `.txt` file into a source S3 bucket.  
+That upload triggers an AWS Lambda function via S3 Event Notification.  
+The Lambda function reads the text file, sends the content to Amazon Polly, receives the generated audio stream, and uploads the resulting MP3 file into a destination S3 bucket.
+
+This creates a simple, scalable, and fully managed text-to-speech conversion workflow.
+
+---
+
+## 🏗️ Architecture – AWS Services Used
+
+- **Amazon S3** – Stores source text files and generated audio files
+- **AWS Lambda** – Serverless processing logic
+- **Amazon Polly** – Converts text into speech
 - **Amazon CloudWatch** – Logging and monitoring
+- **AWS IAM** – Secure role-based access between services
 
-![Real Time Text to Audio Converter Architecture Diagram](/images/architecture.png)
+---
 
-## Step-by-Step Setup Guide
-### 1️⃣ Create IAM Role for Lambda
-Create an IAM role that allows Lambda to access Polly and S3.
+## 🔄 Processing Flow
 
-1. Open **IAM** → Roles → Create role
-2. Trusted entity:
-    - **AWS service**
-    - Use case: **Lambda**
-4. Attach the following policies:
-    - AmazonPollyFullAccess
-    - AmazonS3FullAccess
-    - AWSLambdaBasicExecutionRole
-5. Role name:
-  ```
-  PollyTranslationRole
-  ```
-5. Create the role
+1. User uploads a `.txt` file to the **S3 Source Bucket**
+2. **S3 Event Notification** triggers the Lambda function
+3. Lambda reads the uploaded text file from S3
+4. Lambda sends the text to **Amazon Polly**
+5. Amazon Polly converts the text to speech and returns an **AudioStream**
+6. Lambda uploads the MP3 file to the **S3 Destination Bucket**
+7. End user accesses the generated audio file
 
-### 2️⃣ Create S3 Buckets
-Create **two S3 buckets**.
-1. Source Bucket (Text Files)
-    - Example name:
-      ```
-      th-polly-text-files-storage-bucket
-      ```
-    - This bucket will store uploaded `.txt` files
-2. Destination Bucket (Audio Files)
-    - Example name:
-      ```
-      th-polly-audio-files-storage-bucket
-      ```
-This bucket will store generated `.mp3` files
+---
 
-Keep all other settings as **default**.
+## 🖼️ Architecture Diagram
 
-## 3️⃣ Create the Lambda Function
-1. Open **AWS Lambda** → Create function
-2. Select **Author from scratch**
+![Text to Speech Converter Architecture](./images/text-to-speech-architecture.png)
 
-**Function settings:**
-- Function name:
-```
-PollyTranslationFunction
-```
-- Runtime:
-```
-Python 3.14
-```
-- Execution role:
-    - Use an existing role
-    - Select:
-      ```
-      PollyTranslationRole
-      ```
-3. Create the function
+**Figure:** Serverless Text-to-Speech Architecture using Amazon S3, AWS Lambda, and Amazon Polly.
 
-## 4️⃣ Configure Lambda Environment Variables
-Go to **Configuration → Environment variables** and add:
+---
 
-| Key          | Value                               |
-| ------------ | ----------------------------------- |
-| TEXT_BUCKET  | th-polly-text-files-storage-bucket  |
-| AUDIO_BUCKET | th-polly-audio-files-storage-bucket |
+## ⚙️ Key Design Decisions
 
-These variables define the source and destination S3 buckets.
+### Serverless-First Architecture
+- No servers to provision or maintain
+- Automatic scaling based on upload events
+- Pay-per-use cost model
 
-## 5️⃣ Add Lambda Code
-1. Open the **Code** tab
-2. Replace the default code with your **Text-to-Speech Lambda function code**
-3. Click **Deploy**
+### Event-Driven Processing
+- File upload in S3 automatically triggers processing
+- No manual execution required
+- Clean and efficient workflow for document-to-audio conversion
 
-The Lambda function:
- - Reads text from the source S3 bucket
- - Converts it to speech using Amazon Polly
- - Uploads the generated MP3 to the destination bucket
+### Decoupled Storage Design
+- Separate source and destination buckets
+- Clear separation between input text and output audio
+- Easier debugging and management
 
-## 6️⃣ Configure S3 Trigger
-1. Open the **source S3 bucket**
-2. Go to **Properties**
-3. Scroll to **Event notifications**
-4. Click **Create event notification**
+### Environment-Based Configuration
+- Bucket names are stored as Lambda environment variables
+- No hardcoded configuration in source code
+- Easier to reuse across environments
 
-**Event configuration:**
- - Name:
-   ```
-    TextUploadTrigger
-   ```
- - Event types:
-    - ✅ Object created (PUT)
- - Suffix:
-   ```
-    .txt
-   ```
- - Destination:
-    - Lambda function
-    - Select:
-      ```
-        PollyTranslationFunction
-      ```
- - Enable:
-    - ✅ Recursive invocation
+### Observability
+- Lambda execution flow is logged in CloudWatch
+- Errors and processing stages are easier to trace
+- Helps with debugging and reliability
 
-Save the configuration.
+---
 
-## 7️⃣ Configure Lambda Destination (Failure Handling)
+## 🧪 How It Works
 
-To capture failed invocations:
-1. Open **Lambda → PollyTranslationFunction**
-2. Go to **Configuration → Asynchronous invocation**
-3. Add a destination:
+1. Open the source S3 bucket
+2. Upload a `.txt` file
+3. S3 automatically triggers the Lambda function
+4. Lambda reads the file and sends the text to Amazon Polly
+5. Polly generates speech and returns the audio stream
+6. Lambda stores the generated `.mp3` file in the destination bucket
+7. The final audio file is ready for download or playback
 
-Settings:
- - Condition:
-   ```
-    On failure
-   ```
- - Destination type:
-   ```
-    S3 bucket
-   ```
- - Destination:
-   ```
-    th-polly-audio-files-storage-bucket
-   ```
-This stores failure records in S3 for debugging and auditing.
+---
 
-## How to Test the System
-1. Create a text file, for example:
-   ```
-    hello.txt
-   ```
-2. Upload it to:
-   ```
-    s3://th-polly-text-files-storage-bucket/
-   ```
-3. The Lambda function is triggered automatically
-4. An MP3 file is generated and saved to:
-   ```
-    s3://th-polly-audio-files-storage-bucket/
-   ```
-   
-## Sample Output
-- Input:
-  ```
-    hello.txt
-  ```
-- Output:
-  ```
-    hello.mp3
-  ```
-The audio file contains spoken narration of the uploaded text.
+## 📘 Step-by-Step Setup Guide
 
-## Logging  & Monitoring
-- Execution logs are available in **Amazon CloudWatch Logs**
-- Logs show:
-    - File processing start
-    - Text size
-    - Polly conversion status
-    - S3 upload success or failure
+### 1️⃣ Create IAM Role
+Create a role for Lambda with the required permissions.
 
-## Security Notes
-- IAM role follows least-privilege principles
-- No AWS credentials are hardcoded
-- Configuration is handled using environment variables
-- All services communicate securely via AWS IAM
+**Role Name**
+```txt
+PollyTranslationRole
+
+
+
 
 
 
